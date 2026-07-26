@@ -3,6 +3,7 @@
     internal class MainMenu
     {
         private bool menuRunning = true;
+        private TaskService taskService = new TaskService();
         
         public void Run()
         {
@@ -17,10 +18,10 @@
                         menuRunning = false;
                         break;
                     case 1:
-                        Console.WriteLine("Создание задачи в процессе...");
+                        CreateTask();
                         break;
                     case 2:
-                        Console.WriteLine("Задач еще не создано");
+                        ShowTasks();
                         break;
                 }
             }
@@ -40,6 +41,40 @@
             Console.Write("Ваш выбор: ");
         }
 
+        private void CreateTask()
+        {
+            Console.Write("Введите название задачи: ");
+            string title = Console.ReadLine();
+            Console.Write("Введите описание задачи: ");
+            string description = Console.ReadLine();
+            TaskItem newTask = new TaskItem(title, description);
+            taskService.AddTask(newTask);
+            Console.WriteLine("Задача добавлена!");
+            WaitForKey();
+        }
+
+        private void ShowTasks()
+        {
+            IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Задач пока нет");
+                WaitForKey();
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                string status = task.IsCompleted ? "Выполнена" : "В процессе";
+
+                Console.WriteLine($"Задача: {task.Title}");
+                Console.WriteLine($"Описание: {task.Description}");
+                Console.WriteLine($"Статус: {status}");
+                Console.WriteLine("=======================");
+                Console.WriteLine();
+            }
+            WaitForKey();
+        }
+
         private int ReadChoice(int min, int max)
         {
             while (true)
@@ -57,6 +92,14 @@
                 }
 
             }
+        }
+
+        private void WaitForKey()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Нажмите любую клавишу...");
+            Console.ReadKey(true);
+            Console.Clear();
         }
     }
 }
