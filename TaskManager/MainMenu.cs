@@ -42,11 +42,9 @@
         }
 
         private void CreateTask()
-        {
-            Console.Write("Введите название задачи: ");
-            string title = Console.ReadLine();
-            Console.Write("Введите описание задачи: ");
-            string description = Console.ReadLine();
+        {            
+            string title = ReadRequiredText("Введите название задачи: ");
+            string description = ReadRequiredText("Введите описание задачи: ");
             TaskItem newTask = new TaskItem(title, description);
             taskService.AddTask(newTask);
             Console.WriteLine("Задача добавлена!");
@@ -91,6 +89,24 @@
                     return choice;
                 }
 
+            }
+        }
+
+        private string ReadRequiredText(string prompt) 
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string userInput = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(userInput))
+                {
+                    Console.WriteLine("Поле не может быть пустым");
+                }
+                else
+                {
+                    return userInput;
+                }
             }
         }
 
