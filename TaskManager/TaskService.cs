@@ -19,6 +19,11 @@
             if (taskNumber >= 1 && taskNumber <= tasks.Count)
             {
                 int index = taskNumber - 1;
+                if (tasks[index].IsCompleted)
+                {
+                    return false;
+                }
+
                 tasks[index].IsCompleted = true;
                 return true;
             }

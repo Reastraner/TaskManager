@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 3);
+                int userChoice = ReadChoice(0, 4);
 
                 switch (userChoice)
                 {
@@ -21,9 +21,12 @@
                         CreateTask();
                         break;
                     case 2:
-                        ShowTasks();
+                        ShowTasks(false);
                         break;
                     case 3:
+                        ShowTasks(true);
+                        break;
+                    case 4:
                         TaskStatusChange();
                         break;
                 }
@@ -37,8 +40,9 @@
             Console.WriteLine();
             Console.WriteLine("Что вы хотите сделать?");
             Console.WriteLine("1 - Создать новую задачу.");
-            Console.WriteLine("2 - Просмотреть задачи.");
-            Console.WriteLine("3 - Изменить статус задачи.");
+            Console.WriteLine("2 - Просмотреть текущие задачи.");
+            Console.WriteLine("3 - Просмотреть выполненные задачи.");
+            Console.WriteLine("4 - Изменить статус задачи.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -55,7 +59,7 @@
             WaitForKey();
         }
 
-        private void ShowTasks()
+        private void ShowTasks(bool showCompleted)
         {
             IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
             if (tasks.Count == 0)
@@ -64,8 +68,16 @@
                 WaitForKey();
                 return;
             }
+
+            bool tasksFound = false;
+
             foreach (TaskItem task in tasks)
             {
+                if (task.IsCompleted != showCompleted)
+                {
+                    continue;
+                }
+                tasksFound = true;
                 string status = task.IsCompleted ? "Выполнена" : "В процессе";
 
                 Console.WriteLine($"Задача: {task.Title}");
@@ -73,6 +85,17 @@
                 Console.WriteLine($"Статус: {status}");
                 Console.WriteLine("=======================");
                 Console.WriteLine();
+            }
+            if (!tasksFound)
+            {
+                if (showCompleted)
+                {
+                    Console.WriteLine("Выполненных задач нет.");
+                }
+                else
+                {
+                    Console.WriteLine("Текущих задач нет.");
+                }
             }
             WaitForKey();
         }
@@ -89,7 +112,8 @@
 
             for(int i = 0; i < tasks.Count; i++) 
             {
-                Console.WriteLine($"{i + 1} - {tasks[i].Title}");
+                string status = tasks[i].IsCompleted ? "Выполнена" : "В процессе";
+                Console.WriteLine($"{i + 1} - {tasks[i].Title} [{status}]");
             }
 
             Console.Write("Введите номер задачи: ");
@@ -103,7 +127,7 @@
             }
             else
             {
-                Console.WriteLine("Выберите задачу из списка.");
+                Console.WriteLine("Эта задача уже выполнена.");
             }
             WaitForKey();
         }
