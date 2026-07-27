@@ -13,5 +13,16 @@
         {
             return tasks;
         }
+
+        public bool MarkAsCompleted(int taskNumber)
+        {
+            if (taskNumber >= 1 && taskNumber <= tasks.Count)
+            {
+                int index = taskNumber - 1;
+                tasks[index].IsCompleted = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

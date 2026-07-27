@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 2);
+                int userChoice = ReadChoice(0, 3);
 
                 switch (userChoice)
                 {
@@ -22,6 +22,9 @@
                         break;
                     case 2:
                         ShowTasks();
+                        break;
+                    case 3:
+                        TaskStatusChange();
                         break;
                 }
             }
@@ -35,6 +38,7 @@
             Console.WriteLine("Что вы хотите сделать?");
             Console.WriteLine("1 - Создать новую задачу.");
             Console.WriteLine("2 - Просмотреть задачи.");
+            Console.WriteLine("3 - Изменить статус задачи.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -56,7 +60,7 @@
             IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Задач пока нет");
+                Console.WriteLine("Список задач пуст.");
                 WaitForKey();
                 return;
             }
@@ -69,6 +73,37 @@
                 Console.WriteLine($"Статус: {status}");
                 Console.WriteLine("=======================");
                 Console.WriteLine();
+            }
+            WaitForKey();
+        }
+
+        private void TaskStatusChange()
+        {
+            IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
+            if ( tasks.Count == 0)
+            {
+                Console.WriteLine("Список задач пуст.");
+                WaitForKey();
+                return;
+            }
+
+            for(int i = 0; i < tasks.Count; i++) 
+            {
+                Console.WriteLine($"{i + 1} - {tasks[i].Title}");
+            }
+
+            Console.Write("Введите номер задачи: ");
+            int userChoice = ReadChoice(1, tasks.Count);
+
+            bool result = taskService.MarkAsCompleted(userChoice);
+
+            if (result)
+            {
+                Console.WriteLine($"Задача под номером {userChoice} помечена как выполненная");
+            }
+            else
+            {
+                Console.WriteLine("Выберите задачу из списка.");
             }
             WaitForKey();
         }
