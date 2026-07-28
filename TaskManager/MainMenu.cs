@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 4);
+                int userChoice = ReadChoice(0, 5);
 
                 switch (userChoice)
                 {
@@ -29,6 +29,9 @@
                     case 4:
                         TaskStatusChange();
                         break;
+                    case 5:
+                        EditTaskDialog();
+                        break;
                 }
             }
         }
@@ -43,6 +46,7 @@
             Console.WriteLine("2 - Просмотреть текущие задачи.");
             Console.WriteLine("3 - Просмотреть выполненные задачи.");
             Console.WriteLine("4 - Изменить статус задачи.");
+            Console.WriteLine("5 - Изменить задачу.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -129,6 +133,42 @@
             {
                 Console.WriteLine("Эта задача уже выполнена.");
             }
+            WaitForKey();
+        }
+
+        private void EditTaskDialog()
+        {
+            IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
+
+            if ( tasks.Count == 0)
+            {
+                Console.WriteLine("Список задач пуст.");
+                WaitForKey();
+                return;
+            }
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Console.WriteLine($"{i + 1} - {tasks[i].Title} : {tasks[i].Description}");
+            }
+
+            Console.Write("Введите номер задачи: ");
+            int userChoice = ReadChoice(1, tasks.Count);
+
+            string newTitle = ReadRequiredText("Введите новое название: ");
+            string newDescription = ReadRequiredText("Введите новое описание: ");
+
+            bool result = taskService.EditTask(userChoice, newTitle, newDescription);
+
+            if (result)
+            {
+                Console.WriteLine("Задача успешно отредактирована.");
+            }
+            else
+            {
+                Console.WriteLine("Не удалось найти задачу.");
+            }
+            
             WaitForKey();
         }
 

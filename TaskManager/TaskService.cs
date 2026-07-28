@@ -29,5 +29,17 @@
             }
             return false;
         }
+
+        public bool EditTask(int taskNumber, string newTitle, string newDescription)
+        {
+            if (taskNumber >= 1 && taskNumber <= tasks.Count)
+            {
+                int index = taskNumber - 1;
+
+                tasks[index].Update(newTitle, newDescription);
+                return true;
+            }
+            return false;
+        }
     }
 }
