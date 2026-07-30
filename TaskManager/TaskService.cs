@@ -41,5 +41,17 @@
             }
             return false;
         }
+
+        public bool DeleteTask(int taskNumber)
+        {
+            if (taskNumber >= 1 && taskNumber <= tasks.Count)
+            {
+                int index = taskNumber - 1;
+
+                tasks.RemoveAt(index);
+                return true;
+            }
+            return false;
+        }
     }
 }

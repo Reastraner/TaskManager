@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 5);
+                int userChoice = ReadChoice(0, 6);
 
                 switch (userChoice)
                 {
@@ -32,6 +32,9 @@
                     case 5:
                         EditTaskDialog();
                         break;
+                    case 6:
+                        DeleteTaskDialog();
+                        break;
                 }
             }
         }
@@ -47,6 +50,7 @@
             Console.WriteLine("3 - Просмотреть выполненные задачи.");
             Console.WriteLine("4 - Изменить статус задачи.");
             Console.WriteLine("5 - Изменить задачу.");
+            Console.WriteLine("6 - Удалить задачу.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -114,11 +118,7 @@
                 return;
             }
 
-            for(int i = 0; i < tasks.Count; i++) 
-            {
-                string status = tasks[i].IsCompleted ? "Выполнена" : "В процессе";
-                Console.WriteLine($"{i + 1} - {tasks[i].Title} [{status}]");
-            }
+            ShowNumberedList(tasks);
 
             Console.Write("Введите номер задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
@@ -147,10 +147,7 @@
                 return;
             }
 
-            for (int i = 0; i < tasks.Count; i++)
-            {
-                Console.WriteLine($"{i + 1} - {tasks[i].Title} : {tasks[i].Description}");
-            }
+            ShowNumberedList(tasks);
 
             Console.Write("Введите номер задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
@@ -169,6 +166,33 @@
                 Console.WriteLine("Не удалось найти задачу.");
             }
             
+            WaitForKey();
+        }
+
+        private void DeleteTaskDialog()
+        {
+            IReadOnlyList<TaskItem> tasks = taskService.GetTasks();
+            
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Список задач пуст.");
+                WaitForKey();
+                return;
+            }
+
+            ShowNumberedList(tasks);
+
+            Console.Write("Введите номер задачи: ");
+            int userChoice = ReadChoice(1, tasks.Count);
+            bool result = taskService.DeleteTask(userChoice);
+            if (result)
+            {
+                Console.WriteLine($"Задача под номером {userChoice} удалена из списка.");
+            }
+            else
+            {
+                Console.WriteLine($"Задача под номером {userChoice} не найдена.");
+            }
             WaitForKey();
         }
 
@@ -215,6 +239,14 @@
             Console.WriteLine("Нажмите любую клавишу...");
             Console.ReadKey(true);
             Console.Clear();
+        }
+
+        private void ShowNumberedList(IReadOnlyList<TaskItem> tasks)
+        {
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                Console.WriteLine($"{i + 1} - {tasks[i].Title}");
+            }
         }
     }
 }
