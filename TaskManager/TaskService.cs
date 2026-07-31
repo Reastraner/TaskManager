@@ -1,12 +1,23 @@
-﻿namespace TaskManager
+﻿using System.Text.Json;
+using System.Text.Encodings.Web;
+
+namespace TaskManager
 {
     internal class TaskService
     {
         private readonly List<TaskItem> tasks = new List<TaskItem>();
+        private static readonly string DataFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "My Task Manager");
+        private static readonly string FilePath = Path.Combine(DataFolderPath, "tasks.json");
+
+        public TaskService()
+        {
+            LoadTasks();
+        }
 
         public void AddTask(TaskItem task)
         {
             tasks.Add(task);
+            SaveTasks();
         }
 
         public IReadOnlyList<TaskItem> GetTasks()
@@ -25,6 +36,7 @@
                 }
 
                 tasks[index].IsCompleted = true;
+                SaveTasks();
                 return true;
             }
             return false;
@@ -37,6 +49,7 @@
                 int index = taskNumber - 1;
 
                 tasks[index].Update(newTitle, newDescription);
+                SaveTasks();
                 return true;
             }
             return false;
@@ -49,9 +62,49 @@
                 int index = taskNumber - 1;
 
                 tasks.RemoveAt(index);
+                SaveTasks();
                 return true;
             }
             return false;
+        }
+
+        private void SaveTasks()
+        {
+            Directory.CreateDirectory(DataFolderPath);
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            string json = JsonSerializer.Serialize(tasks, options);
+
+            File.WriteAllText(FilePath, json);
+        }
+
+        private void LoadTasks()
+        {
+            if (!File.Exists(FilePath))
+            {
+                return;
+            }
+
+            string json = File.ReadAllText(FilePath);
+
+            try
+            {
+                List<TaskItem>? loadedTasks = JsonSerializer.Deserialize<List<TaskItem>>(json);
+
+                if (loadedTasks != null)
+                {
+                    tasks.AddRange(loadedTasks);
+                }
+            }
+            catch (JsonException)
+            {
+                tasks.Clear();
+                SaveTasks();
+            }
         }
     }
 }
