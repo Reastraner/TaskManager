@@ -5,16 +5,20 @@
         public string Title { get; private set; }
         public string Description { get; private set; }
         public bool IsCompleted { get; set; }
-        public TaskItem(string title, string description)
-        {
-            Title = title;
-            Description = description;            
-        }
-
-        public void Update(string title, string description)
+        public TaskPriority Priority { get; private set; }
+        
+        public TaskItem(string title, string description, TaskPriority priority)
         {
             Title = title;
             Description = description;
+            Priority = priority;
+        }
+
+        public void Update(string title, string description, TaskPriority priority)
+        {
+            Title = title;
+            Description = description;
+            Priority = priority;
         }
     }
 }

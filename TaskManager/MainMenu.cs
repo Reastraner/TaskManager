@@ -61,7 +61,9 @@
         {            
             string title = ReadRequiredText("Введите название задачи: ");
             string description = ReadRequiredText("Введите описание задачи: ");
-            TaskItem newTask = new TaskItem(title, description);
+            TaskPriority priority = ReadPriority();
+
+            TaskItem newTask = new TaskItem(title, description, priority);
             taskService.AddTask(newTask);
             Console.WriteLine("Задача добавлена!");
             WaitForKey();
@@ -90,6 +92,7 @@
 
                 Console.WriteLine($"Задача: {task.Title}");
                 Console.WriteLine($"Описание: {task.Description}");
+                Console.WriteLine($"Приоритет: {GetPriorityText(task.Priority)}");
                 Console.WriteLine($"Статус: {status}");
                 Console.WriteLine("=======================");
                 Console.WriteLine();
@@ -154,8 +157,9 @@
 
             string newTitle = ReadRequiredText("Введите новое название: ");
             string newDescription = ReadRequiredText("Введите новое описание: ");
+            TaskPriority newPriority = ReadPriority();
 
-            bool result = taskService.EditTask(userChoice, newTitle, newDescription);
+            bool result = taskService.EditTask(userChoice, newTitle, newDescription, newPriority);
 
             if (result)
             {
@@ -245,8 +249,43 @@
         {
             for (int i = 0; i < tasks.Count; i++)
             {
-                Console.WriteLine($"{i + 1} - {tasks[i].Title}");
+                Console.WriteLine($"{i + 1} - {tasks[i].Title} [{GetPriorityText(tasks[i].Priority)}]");
             }
+        }
+
+        private TaskPriority ReadPriority()
+        {
+            Console.WriteLine("Выберите приоритет для задачи: ");
+            Console.WriteLine("1 - Низкий.");
+            Console.WriteLine("2 - Средний.");
+            Console.WriteLine("3 - Высокий. ");
+
+            int userChoice = ReadChoice(1, 3);
+
+            switch (userChoice) 
+            {
+                case 1:
+                    return TaskPriority.Low;
+                case 2:
+                    return TaskPriority.Medium;
+                case 3:
+                    return TaskPriority.High;
+            }
+            return TaskPriority.Medium;
+        }
+
+        private string GetPriorityText(TaskPriority priority) 
+        {
+            switch (priority)
+            {
+                case TaskPriority.Low:
+                    return "Низкий";
+                case TaskPriority.Medium:
+                    return "Средний";
+                case TaskPriority.High:
+                    return "Высокий";
+            }
+            return "Неизвестный";
         }
     }
 }
