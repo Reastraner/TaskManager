@@ -22,20 +22,22 @@ namespace TaskManager
 
         public IReadOnlyList<TaskItem> GetTasks()
         {
-            return tasks;
+            return tasks.OrderByDescending(tasks => tasks.Priority).ToList();
         }
 
         public bool MarkAsCompleted(int taskNumber)
         {
-            if (taskNumber >= 1 && taskNumber <= tasks.Count)
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
+
+            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
             {
-                int index = taskNumber - 1;
-                if (tasks[index].IsCompleted)
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+                if (selectedTask.IsCompleted)
                 {
                     return false;
                 }
 
-                tasks[index].IsCompleted = true;
+                selectedTask.IsCompleted = true;
                 SaveTasks();
                 return true;
             }
@@ -44,11 +46,13 @@ namespace TaskManager
 
         public bool EditTask(int taskNumber, string newTitle, string newDescription, TaskPriority newPriority)
         {
-            if (taskNumber >= 1 && taskNumber <= tasks.Count)
-            {
-                int index = taskNumber - 1;
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
 
-                tasks[index].Update(newTitle, newDescription, newPriority);
+            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            {
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+
+                selectedTask.Update(newTitle, newDescription, newPriority);
                 SaveTasks();
                 return true;
             }
@@ -57,11 +61,12 @@ namespace TaskManager
 
         public bool DeleteTask(int taskNumber)
         {
-            if (taskNumber >= 1 && taskNumber <= tasks.Count)
-            {
-                int index = taskNumber - 1;
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
 
-                tasks.RemoveAt(index);
+            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            {
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+                tasks.Remove(selectedTask);
                 SaveTasks();
                 return true;
             }
