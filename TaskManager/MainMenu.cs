@@ -94,6 +94,7 @@
                 Console.WriteLine($"Описание: {task.Description}");
                 Console.WriteLine($"Приоритет: {GetPriorityText(task.Priority)}");
                 Console.WriteLine($"Статус: {status}");
+                Console.WriteLine($"Создана: {task.CreatedAt: dd.MM.yyyy HH:mm}");
                 Console.WriteLine("=======================");
                 Console.WriteLine();
             }
