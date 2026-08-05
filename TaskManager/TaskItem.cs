@@ -19,10 +19,18 @@ namespace TaskManager
             CreatedAt = DateTime.Now;
         }
 
-        public void Update(string title, string description, TaskPriority priority)
+        public void UpdateTitle(string title)
         {
             Title = title;
+        }
+
+        public void UpdateDescription(string description)
+        {
             Description = description;
+        }
+
+        public void UpdatePriority(TaskPriority priority)
+        {
             Priority = priority;
         }
     }

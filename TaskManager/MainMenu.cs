@@ -156,20 +156,57 @@
             Console.Write("Введите номер задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
 
-            string newTitle = ReadRequiredText("Введите новое название: ");
-            string newDescription = ReadRequiredText("Введите новое описание: ");
-            TaskPriority newPriority = ReadPriority();
-
-            bool result = taskService.EditTask(userChoice, newTitle, newDescription, newPriority);
-
-            if (result)
+            Console.WriteLine("1 - Изменить название.");
+            Console.WriteLine("2 - Изменить описание.");
+            Console.WriteLine("3 - Изменить приоритет.");
+            Console.WriteLine();
+            Console.WriteLine("0 - Назад.");
+            int editChoice = ReadChoice(0, 3);
+            
+            switch (editChoice)
             {
-                Console.WriteLine("Задача успешно отредактирована.");
+                case 0:
+                    return;
+                case 1:
+                    string newTitle = ReadRequiredText("Введите новое название: ");
+                    bool resultTitle = taskService.EditTitle(userChoice, newTitle);
+                    if (resultTitle)
+                    {
+                        Console.WriteLine("Название задачи успешно изменено!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка!");
+                    }
+                    break;
+                case 2:
+                    string newDescription = ReadRequiredText("Введите новое описание: ");
+                    bool resultDescription = taskService.EditDescription(userChoice, newDescription);
+                    if (resultDescription)
+                    {
+                        Console.WriteLine("Описание задачи успешно изменено!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка!");
+                    }
+                    break;
+                case 3:
+                    TaskPriority newPriority = ReadPriority();
+                    bool resultPriority = taskService.EditPriority(userChoice, newPriority);
+                    if (resultPriority)
+                    {
+                        Console.WriteLine("Приоритет задачи успешно изменён!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ошибка!");
+                    }
+                    break;
             }
-            else
-            {
-                Console.WriteLine("Не удалось найти задачу.");
-            }
+                
+
+
             
             WaitForKey();
         }

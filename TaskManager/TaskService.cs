@@ -44,15 +44,42 @@ namespace TaskManager
             return false;
         }
 
-        public bool EditTask(int taskNumber, string newTitle, string newDescription, TaskPriority newPriority)
+        public bool EditTitle(int taskNumber, string newTitle)
         {
             IReadOnlyList<TaskItem> sortedTasks = GetTasks();
+            if(taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            {
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
 
+                selectedTask.UpdateTitle(newTitle);
+                SaveTasks();
+                return true;
+            }
+            return false;
+        }
+
+        public bool EditDescription(int taskNumber, string newDescription)
+        {
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
             if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
             {
                 TaskItem selectedTask = sortedTasks[taskNumber - 1];
 
-                selectedTask.Update(newTitle, newDescription, newPriority);
+                selectedTask.UpdateDescription(newDescription);
+                SaveTasks();
+                return true;
+            }
+            return false;
+        }
+
+        public bool EditPriority(int taskNumber, TaskPriority newPriority)
+        {
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
+            if (taskNumber >= 1 &&  taskNumber <= sortedTasks.Count)
+            {
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+
+                selectedTask.UpdatePriority(newPriority);
                 SaveTasks();
                 return true;
             }
