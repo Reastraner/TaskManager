@@ -25,6 +25,11 @@ namespace TaskManager
             return tasks.OrderByDescending(tasks => tasks.Priority).ToList();
         }
 
+        public IReadOnlyList<TaskItem> FindTasks (string searchText)
+        {
+            return tasks.Where(task => task.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
         public bool MarkAsCompleted(int taskNumber)
         {
             IReadOnlyList<TaskItem> sortedTasks = GetTasks();

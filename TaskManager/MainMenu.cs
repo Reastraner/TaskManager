@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 6);
+                int userChoice = ReadChoice(0, 7);
 
                 switch (userChoice)
                 {
@@ -35,6 +35,9 @@
                     case 6:
                         DeleteTaskDialog();
                         break;
+                    case 7:
+                        FindTasks();
+                        break;
                 }
             }
         }
@@ -51,6 +54,7 @@
             Console.WriteLine("4 - Изменить статус задачи.");
             Console.WriteLine("5 - Изменить задачу.");
             Console.WriteLine("6 - Удалить задачу.");
+            Console.WriteLine("7 - Поиск задачи.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -235,6 +239,20 @@
             {
                 Console.WriteLine($"Задача под номером {userChoice} не найдена.");
             }
+            WaitForKey();
+        }
+
+        private void FindTasks()
+        {
+            string searchText = ReadRequiredText("Введите текст для поиска: ");
+            IReadOnlyList<TaskItem> foundTasks = taskService.FindTasks(searchText);
+            if (foundTasks.Count == 0)
+            {
+                Console.WriteLine("Нет задач соответствующих условиям поиска...");
+                WaitForKey();
+                return;
+            }
+            ShowNumberedList(foundTasks);
             WaitForKey();
         }
 
