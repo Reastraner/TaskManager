@@ -30,6 +30,11 @@ namespace TaskManager
             return tasks.Where(task => task.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
+        public IReadOnlyList<TaskItem> FilterByPriority (TaskPriority priority)
+        {
+            return tasks.Where(task => task.Priority == priority).ToList();
+        }
+
         public bool MarkAsCompleted(int taskNumber)
         {
             IReadOnlyList<TaskItem> sortedTasks = GetTasks();

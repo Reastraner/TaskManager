@@ -10,7 +10,7 @@
             while (menuRunning)
             {
                 ShowMenu();
-                int userChoice = ReadChoice(0, 7);
+                int userChoice = ReadChoice(0, 8);
 
                 switch (userChoice)
                 {
@@ -38,6 +38,9 @@
                     case 7:
                         FindTasks();
                         break;
+                    case 8:
+                        PriorityFinder();
+                        break;
                 }
             }
         }
@@ -55,6 +58,7 @@
             Console.WriteLine("5 - Изменить задачу.");
             Console.WriteLine("6 - Удалить задачу.");
             Console.WriteLine("7 - Поиск задачи.");
+            Console.WriteLine("8 - Фильтрация по приоритету.");
             Console.WriteLine();
             Console.WriteLine("0 - Выход");
             Console.WriteLine();
@@ -254,6 +258,22 @@
             }
             ShowNumberedList(foundTasks);
             WaitForKey();
+        }
+
+        private void PriorityFinder()
+        {
+            TaskPriority priority = ReadPriority();
+            IReadOnlyList<TaskItem> filteredTasks = taskService.FilterByPriority(priority);
+            
+            if (filteredTasks.Count == 0)
+            {
+                Console.WriteLine("Задач с выбранным приоритетом нет.");
+                WaitForKey();
+                return;
+            }
+            ShowNumberedList(filteredTasks);
+            WaitForKey();
+            return;
         }
 
         private int ReadChoice(int min, int max)
