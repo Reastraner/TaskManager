@@ -1,4 +1,6 @@
-﻿namespace TaskManager
+﻿using System.Globalization;
+
+namespace TaskManager
 {
     internal class MainMenu
     {
@@ -70,8 +72,9 @@
             string title = ReadRequiredText("Введите название задачи: ");
             string description = ReadRequiredText("Введите описание задачи: ");
             TaskPriority priority = ReadPriority();
+            DateTime? deadline = SetDeadline();
 
-            TaskItem newTask = new TaskItem(title, description, priority);
+            TaskItem newTask = new TaskItem(title, description, priority, deadline);
             taskService.AddTask(newTask);
             Console.WriteLine("Задача добавлена!");
             WaitForKey();
@@ -97,12 +100,14 @@
                 }
                 tasksFound = true;
                 string status = task.IsCompleted ? "Выполнена" : "В процессе";
+                string hasDeadline = task.Deadline == null ? "Срок: не задан." : $"Срок: {task.Deadline:dd.MM.yyyy HH:mm}"; 
 
                 Console.WriteLine($"Задача: {task.Title}");
                 Console.WriteLine($"Описание: {task.Description}");
                 Console.WriteLine($"Приоритет: {GetPriorityText(task.Priority)}");
                 Console.WriteLine($"Статус: {status}");
-                Console.WriteLine($"Создана: {task.CreatedAt: dd.MM.yyyy HH:mm}");
+                Console.WriteLine($"Создана: {task.CreatedAt:dd.MM.yyyy HH:mm}");
+                Console.WriteLine(hasDeadline);
                 Console.WriteLine("=======================");
                 Console.WriteLine();
             }
@@ -310,6 +315,72 @@
                 {
                     return userInput;
                 }
+            }
+        }
+
+        private DateTime? SetDeadline()
+        {
+            while (true)
+            {
+                Console.WriteLine("Желаете добавить дату и время выполнения задачи?");
+                Console.WriteLine("1 - Да.");
+                Console.WriteLine("2 - Нет.");
+                Console.WriteLine();
+                Console.Write("Ваш ответ: ");
+                int userChoice = ReadChoice(1, 2);
+                switch (userChoice)
+                {
+                    case 1:
+                        string userDeadlineChoice = ReadRequiredText("Введите дату выполнения: ");
+                        bool isDate = DateTime.TryParseExact(userDeadlineChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineDate);
+                        while (!isDate)
+                        {
+                            Console.WriteLine("Неверный формат ввода даты");
+                            Console.WriteLine();
+                            userDeadlineChoice = ReadRequiredText("Введите дату выполнения: ");
+                            isDate = DateTime.TryParseExact(userDeadlineChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out deadlineDate);
+                        }
+                        Console.Write("Введите время выполнения задачи в формате часы:минуты, или нажмите Enter, чтобы оставить 23:59.");
+                        string userTimeChoice = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(userTimeChoice))
+                        {
+                            deadlineDate = deadlineDate.AddHours(23).AddMinutes(59);
+                        }
+                        else
+                        {
+                            bool isTime = DateTime.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineTime);
+
+                            while (!isTime)
+                            {
+                                Console.WriteLine("Неверный формат ввода времени.");
+                                Console.WriteLine();
+                                Console.Write("Введите время в формате часы:минуты: ");
+                                userTimeChoice = Console.ReadLine();
+                                isTime = DateTime.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out deadlineTime);
+                            }
+                            deadlineDate = deadlineDate.AddHours(deadlineTime.Hour).AddMinutes(deadlineTime.Minute);
+                        }
+
+                        if (deadlineDate < DateTime.Now)
+                        {
+                            Console.WriteLine("Указанные дата и время уже прошли, желаете создать задачу с таким сроком выполнения?");
+                            Console.WriteLine("1 - Да");
+                            Console.WriteLine("2 - Нет");
+                            int dateChoice = ReadChoice(1, 2);
+                            switch (dateChoice)
+                            {
+                                case 1:
+                                    return deadlineDate;
+                                case 2:
+                                    continue;
+                            }
+                        }
+                        return deadlineDate;
+                    case 2:
+                        return null;
+                }
+                return null;
             }
         }
 
