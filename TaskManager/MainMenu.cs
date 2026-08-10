@@ -72,7 +72,7 @@ namespace TaskManager
             string title = ReadRequiredText("Введите название задачи: ");
             string description = ReadRequiredText("Введите описание задачи: ");
             TaskPriority priority = ReadPriority();
-            DateTime? deadline = SetDeadline();
+            DateTime? deadline = SetDeadline(false);
 
             TaskItem newTask = new TaskItem(title, description, priority, deadline);
             taskService.AddTask(newTask);
@@ -99,7 +99,19 @@ namespace TaskManager
                     continue;
                 }
                 tasksFound = true;
-                string status = task.IsCompleted ? "Выполнена" : "В процессе";
+                string status;
+                if (task.IsCompleted)
+                {
+                    status = "Выполнена";
+                }
+                else if (task.Deadline != null && task.Deadline < DateTime.Now)
+                {
+                    status = "В процессе - ПРОСРОЧЕНА";
+                }
+                else
+                {
+                    status = "В процессе";
+                }
                 string hasDeadline = task.Deadline == null ? "Срок: не задан." : $"Срок: {task.Deadline:dd.MM.yyyy HH:mm}"; 
 
                 Console.WriteLine($"Задача: {task.Title}");
@@ -172,10 +184,11 @@ namespace TaskManager
             Console.WriteLine("1 - Изменить название.");
             Console.WriteLine("2 - Изменить описание.");
             Console.WriteLine("3 - Изменить приоритет.");
+            Console.WriteLine("4 - Изменить срок выполнения.");
             Console.WriteLine();
             Console.WriteLine("0 - Назад.");
-            int editChoice = ReadChoice(0, 3);
-            
+            int editChoice = ReadChoice(0, 4);
+
             switch (editChoice)
             {
                 case 0:
@@ -216,11 +229,11 @@ namespace TaskManager
                         Console.WriteLine("Ошибка!");
                     }
                     break;
+                case 4:
+                    DateTime? newDeadline = SetDeadline(true);
+                    taskService.EditDeadline(userChoice,newDeadline);
+                    break;
             }
-                
-
-
-            
             WaitForKey();
         }
 
@@ -318,7 +331,7 @@ namespace TaskManager
             }
         }
 
-        private DateTime? SetDeadline()
+        private DateTime? SetDeadline(bool isEdit)
         {
             while (true)
             {
@@ -331,7 +344,20 @@ namespace TaskManager
                 switch (userChoice)
                 {
                     case 1:
-                        string userDeadlineChoice = ReadRequiredText("Введите дату выполнения: ");
+                        string userDeadlineChoice;
+                        if (isEdit)
+                        {
+                            Console.Write("Введите новую дату выполнения в формате число.месяц.год: ");
+                            userDeadlineChoice = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(userDeadlineChoice))
+                            {
+                                return null;
+                            }
+                        }
+                        else 
+                        { 
+                            userDeadlineChoice = ReadRequiredText("Введите дату выполнения: "); 
+                        }
                         bool isDate = DateTime.TryParseExact(userDeadlineChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineDate);
                         while (!isDate)
                         {

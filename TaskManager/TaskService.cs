@@ -96,6 +96,20 @@ namespace TaskManager
             return false;
         }
 
+        public bool EditDeadline(int taskNumber, DateTime? newDeadline)
+        {
+            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
+            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            {
+                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+
+                selectedTask.UpdateDeadline(newDeadline);
+                SaveTasks();
+                return true;
+            }
+            return false;
+        }
+
         public bool DeleteTask(int taskNumber)
         {
             IReadOnlyList<TaskItem> sortedTasks = GetTasks();

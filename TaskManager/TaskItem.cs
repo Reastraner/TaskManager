@@ -36,5 +36,10 @@ namespace TaskManager
         {
             Priority = priority;
         }
+
+        public void UpdateDeadline(DateTime? deadline)
+        {
+            Deadline = deadline;
+        }
     }
 }
