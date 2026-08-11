@@ -9,17 +9,19 @@ namespace TaskManager
         public bool IsCompleted { get; set; }
         public TaskPriority Priority { get; private set; }
         public DateTime? Deadline { get; private set; }
+        public int Id { get; private set; }
 
         [JsonInclude]
         public DateTime CreatedAt { get; private set; }
         
-        public TaskItem(string title, string description, TaskPriority priority, DateTime? deadline)
-                {
+        public TaskItem(string title, string description, TaskPriority priority, DateTime? deadline, int id)
+        {
             Title = title;
             Description = description;
             Priority = priority;
             CreatedAt = DateTime.Now;
             Deadline = deadline;
+            Id = id;
         }
 
         public void UpdateTitle(string title)

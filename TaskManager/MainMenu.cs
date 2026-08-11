@@ -73,9 +73,8 @@ namespace TaskManager
             string description = ReadRequiredText("Введите описание задачи: ");
             TaskPriority priority = ReadPriority();
             DateTime? deadline = SetDeadline(false);
-
-            TaskItem newTask = new TaskItem(title, description, priority, deadline);
-            taskService.AddTask(newTask);
+            
+            taskService.AddTask(title, description, priority, deadline);
             Console.WriteLine("Задача добавлена!");
             WaitForKey();
         }
