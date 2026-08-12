@@ -148,7 +148,7 @@ namespace TaskManager
 
             ShowNumberedList(tasks);
 
-            Console.Write("Введите номер задачи: ");
+            Console.Write("Введите ID задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
 
             bool result = taskService.MarkAsCompleted(userChoice);
@@ -177,7 +177,7 @@ namespace TaskManager
 
             ShowNumberedList(tasks);
 
-            Console.Write("Введите номер задачи: ");
+            Console.Write("Введите ID задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
 
             Console.WriteLine("1 - Изменить название.");
@@ -249,7 +249,7 @@ namespace TaskManager
 
             ShowNumberedList(tasks);
 
-            Console.Write("Введите номер задачи: ");
+            Console.Write("Введите ID задачи: ");
             int userChoice = ReadChoice(1, tasks.Count);
             bool result = taskService.DeleteTask(userChoice);
             if (result)
@@ -421,7 +421,7 @@ namespace TaskManager
         {
             for (int i = 0; i < tasks.Count; i++)
             {
-                Console.WriteLine($"{i + 1} - {tasks[i].Title} [{GetPriorityText(tasks[i].Priority)}]");
+                Console.WriteLine($"ID: {tasks[i].Id} - {tasks[i].Title} [{GetPriorityText(tasks[i].Priority)}]");
             }
         }
 

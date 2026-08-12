@@ -40,13 +40,12 @@ namespace TaskManager
             return tasks.Where(task => task.Priority == priority).ToList();
         }
 
-        public bool MarkAsCompleted(int taskNumber)
+        public bool MarkAsCompleted(int taskID)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
 
-            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            if (selectedTask != null)
             {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
                 if (selectedTask.IsCompleted)
                 {
                     return false;
@@ -59,13 +58,12 @@ namespace TaskManager
             return false;
         }
 
-        public bool EditTitle(int taskNumber, string newTitle)
+        public bool EditTitle(int taskID, string newTitle)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
-            if(taskNumber >= 1 && taskNumber <= sortedTasks.Count)
-            {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
 
+            if (selectedTask != null)
+            {
                 selectedTask.UpdateTitle(newTitle);
                 SaveTasks();
                 return true;
@@ -73,13 +71,12 @@ namespace TaskManager
             return false;
         }
 
-        public bool EditDescription(int taskNumber, string newDescription)
+        public bool EditDescription(int taskID, string newDescription)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
-            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
-            {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
 
+            if (selectedTask != null)
+            {
                 selectedTask.UpdateDescription(newDescription);
                 SaveTasks();
                 return true;
@@ -87,13 +84,12 @@ namespace TaskManager
             return false;
         }
 
-        public bool EditPriority(int taskNumber, TaskPriority newPriority)
+        public bool EditPriority(int taskID, TaskPriority newPriority)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
-            if (taskNumber >= 1 &&  taskNumber <= sortedTasks.Count)
-            {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
 
+            if (selectedTask != null)
+            {
                 selectedTask.UpdatePriority(newPriority);
                 SaveTasks();
                 return true;
@@ -101,13 +97,12 @@ namespace TaskManager
             return false;
         }
 
-        public bool EditDeadline(int taskNumber, DateTime? newDeadline)
+        public bool EditDeadline(int taskID, DateTime? newDeadline)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
-            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
-            {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
 
+            if (selectedTask != null)
+            {
                 selectedTask.UpdateDeadline(newDeadline);
                 SaveTasks();
                 return true;
@@ -115,13 +110,11 @@ namespace TaskManager
             return false;
         }
 
-        public bool DeleteTask(int taskNumber)
+        public bool DeleteTask(int taskID)
         {
-            IReadOnlyList<TaskItem> sortedTasks = GetTasks();
-
-            if (taskNumber >= 1 && taskNumber <= sortedTasks.Count)
+            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            if (selectedTask != null )
             {
-                TaskItem selectedTask = sortedTasks[taskNumber - 1];
                 tasks.Remove(selectedTask);
                 SaveTasks();
                 return true;
