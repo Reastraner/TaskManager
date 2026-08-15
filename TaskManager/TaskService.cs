@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Encodings.Web;
-using System.Net.Http.Headers;
 
 namespace TaskManager
 {
@@ -42,7 +41,7 @@ namespace TaskManager
 
         public bool MarkAsCompleted(int taskID)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
 
             if (selectedTask != null)
             {
@@ -60,7 +59,7 @@ namespace TaskManager
 
         public bool EditTitle(int taskID, string newTitle)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
 
             if (selectedTask != null)
             {
@@ -73,7 +72,7 @@ namespace TaskManager
 
         public bool EditDescription(int taskID, string newDescription)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
 
             if (selectedTask != null)
             {
@@ -86,7 +85,7 @@ namespace TaskManager
 
         public bool EditPriority(int taskID, TaskPriority newPriority)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
 
             if (selectedTask != null)
             {
@@ -99,7 +98,7 @@ namespace TaskManager
 
         public bool EditDeadline(int taskID, DateTime? newDeadline)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
 
             if (selectedTask != null)
             {
@@ -112,7 +111,7 @@ namespace TaskManager
 
         public bool DeleteTask(int taskID)
         {
-            TaskItem? selectedTask = tasks.Find(task => task.Id == taskID);
+            TaskItem? selectedTask = FindTaskById(taskID);
             if (selectedTask != null )
             {
                 tasks.Remove(selectedTask);
@@ -164,6 +163,16 @@ namespace TaskManager
                 tasks.Clear();
                 SaveTasks();
             }
+        }
+
+        private TaskItem? FindTaskById(int taskId)
+        {
+            return tasks.Find(task => task.Id ==  taskId);
+        }
+
+        public bool TaskExists(int taskId)
+        {
+            return FindTaskById != null;
         }
     }
 }

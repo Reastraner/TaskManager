@@ -149,13 +149,13 @@ namespace TaskManager
             ShowNumberedList(tasks);
 
             Console.Write("Введите ID задачи: ");
-            int userChoice = ReadChoice(1, tasks.Count);
+            int userChoice = ReadTaskID();
 
             bool result = taskService.MarkAsCompleted(userChoice);
 
             if (result)
             {
-                Console.WriteLine($"Задача под номером {userChoice} помечена как выполненная");
+                Console.WriteLine($"Задача с ID {userChoice} помечена как выполненная");
             }
             else
             {
@@ -178,7 +178,7 @@ namespace TaskManager
             ShowNumberedList(tasks);
 
             Console.Write("Введите ID задачи: ");
-            int userChoice = ReadChoice(1, tasks.Count);
+            int userChoice = ReadTaskID();
 
             Console.WriteLine("1 - Изменить название.");
             Console.WriteLine("2 - Изменить описание.");
@@ -250,15 +250,15 @@ namespace TaskManager
             ShowNumberedList(tasks);
 
             Console.Write("Введите ID задачи: ");
-            int userChoice = ReadChoice(1, tasks.Count);
+            int userChoice = ReadTaskID();
             bool result = taskService.DeleteTask(userChoice);
             if (result)
             {
-                Console.WriteLine($"Задача под номером {userChoice} удалена из списка.");
+                Console.WriteLine($"Задача с ID {userChoice} удалена из списка.");
             }
             else
             {
-                Console.WriteLine($"Задача под номером {userChoice} не найдена.");
+                Console.WriteLine($"Задача с ID {userChoice} не найдена.");
             }
             WaitForKey();
         }
@@ -312,6 +312,30 @@ namespace TaskManager
             }
         }
 
+        private int ReadTaskID()
+        {
+            while (true)
+            {
+                bool isNumber = int.TryParse(Console.ReadLine(), out int choice);
+
+                if (!isNumber)
+                {
+                    Console.WriteLine("Было введено не число.");
+                }
+                else
+                {
+                    if (taskService.TaskExists(choice))
+                    {
+                        return choice;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Задача с таким ID не существует.");
+                    }
+                }
+            }
+        }
+
         private string ReadRequiredText(string prompt) 
         {
             while (true)
@@ -332,81 +356,104 @@ namespace TaskManager
 
         private DateTime? SetDeadline(bool isEdit)
         {
-            while (true)
+            Console.WriteLine("Желаете добавить дату и время выполнения задачи?");
+            Console.WriteLine("1 - Да.");
+            Console.WriteLine("2 - Нет.");
+            Console.WriteLine();
+            Console.Write("Ваш ответ: ");
+            int userChoice = ReadChoice(1, 2);
+
+            if (userChoice == 2)
             {
-                Console.WriteLine("Желаете добавить дату и время выполнения задачи?");
-                Console.WriteLine("1 - Да.");
-                Console.WriteLine("2 - Нет.");
-                Console.WriteLine();
-                Console.Write("Ваш ответ: ");
-                int userChoice = ReadChoice(1, 2);
-                switch (userChoice)
-                {
-                    case 1:
-                        string userDeadlineChoice;
-                        if (isEdit)
-                        {
-                            Console.Write("Введите новую дату выполнения в формате число.месяц.год: ");
-                            userDeadlineChoice = Console.ReadLine();
-                            if (string.IsNullOrWhiteSpace(userDeadlineChoice))
-                            {
-                                return null;
-                            }
-                        }
-                        else 
-                        { 
-                            userDeadlineChoice = ReadRequiredText("Введите дату выполнения: "); 
-                        }
-                        bool isDate = DateTime.TryParseExact(userDeadlineChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineDate);
-                        while (!isDate)
-                        {
-                            Console.WriteLine("Неверный формат ввода даты");
-                            Console.WriteLine();
-                            userDeadlineChoice = ReadRequiredText("Введите дату выполнения: ");
-                            isDate = DateTime.TryParseExact(userDeadlineChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out deadlineDate);
-                        }
-                        Console.Write("Введите время выполнения задачи в формате часы:минуты, или нажмите Enter, чтобы оставить 23:59.");
-                        string userTimeChoice = Console.ReadLine();
-
-                        if (string.IsNullOrWhiteSpace(userTimeChoice))
-                        {
-                            deadlineDate = deadlineDate.AddHours(23).AddMinutes(59);
-                        }
-                        else
-                        {
-                            bool isTime = DateTime.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineTime);
-
-                            while (!isTime)
-                            {
-                                Console.WriteLine("Неверный формат ввода времени.");
-                                Console.WriteLine();
-                                Console.Write("Введите время в формате часы:минуты: ");
-                                userTimeChoice = Console.ReadLine();
-                                isTime = DateTime.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out deadlineTime);
-                            }
-                            deadlineDate = deadlineDate.AddHours(deadlineTime.Hour).AddMinutes(deadlineTime.Minute);
-                        }
-
-                        if (deadlineDate < DateTime.Now)
-                        {
-                            Console.WriteLine("Указанные дата и время уже прошли, желаете создать задачу с таким сроком выполнения?");
-                            Console.WriteLine("1 - Да");
-                            Console.WriteLine("2 - Нет");
-                            int dateChoice = ReadChoice(1, 2);
-                            switch (dateChoice)
-                            {
-                                case 1:
-                                    return deadlineDate;
-                                case 2:
-                                    continue;
-                            }
-                        }
-                        return deadlineDate;
-                    case 2:
-                        return null;
-                }
                 return null;
             }
+
+            while (true)
+            {
+                DateTime? deadlineDate = ReadDeadlineDate(isEdit);
+                if (deadlineDate == null)
+                {
+                    return null;
+                }
+                TimeSpan deadlineTime = ReadDeadlineTime();
+                deadlineDate = deadlineDate.Value.Add(deadlineTime);
+
+                if (deadlineDate < DateTime.Now)
+                {
+                    Console.WriteLine("Указанные дата и время уже прошли, желаете создать задачу с таким сроком выполнения?");
+                    Console.WriteLine("1 - Да");
+                    Console.WriteLine("2 - Нет");
+                    int dateChoice = ReadChoice(1, 2);
+                    if (dateChoice == 1)
+                    {
+                        return deadlineDate;
+                    }
+                    continue;
+                }
+                return deadlineDate;
+            }
+        }
+
+        private TimeSpan ReadDeadlineTime()
+        {
+            TimeSpan time = new TimeSpan(23, 59, 0);
+            Console.Write("Введите время выполнения задачи в формате часы:минуты или нажмите Enter, чтобы оставить 23:59");
+            string userTimeChoice = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(userTimeChoice))
+            {
+                return time;
+            }
+            
+            bool isTime = TimeSpan.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan deadlineTime);
+            while (!isTime)
+            {
+                Console.WriteLine("Неверный формат ввода времени.");
+                Console.WriteLine();
+                Console.Write("Введите время в формате часы:минуты: ");
+                userTimeChoice = Console.ReadLine();
+                isTime = TimeSpan.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out deadlineTime);
+            }
+            return deadlineTime;
+        }
+
+        private DateTime? ReadDeadlineDate(bool isEdit)
+        {
+            while (true)
+            {
+                string? userDateChoice = ReadDeadlineDateInput(isEdit);
+
+                if (userDateChoice == null)
+                {
+                    return null;
+                }
+                bool isDate = DateTime.TryParseExact(userDateChoice, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deadlineDate);
+                if (isDate)
+                {
+                    return deadlineDate;
+                }
+                Console.WriteLine("Неверный формат ввода даты.");
+                Console.WriteLine();
+                continue;
+            }
+        }
+
+        private string? ReadDeadlineDateInput(bool isEdit)
+        {
+            string? userDateChoice;
+            if (isEdit)
+            {
+                Console.Write("Введите новую дату выполнения в формате число.месяц.год: ");
+                userDateChoice = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(userDateChoice))
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                userDateChoice = ReadRequiredText("Введите дату выполнения в формате число.месяц.год: ");
+            }
+            return userDateChoice;
         }
 
         private void WaitForKey()
@@ -459,5 +506,6 @@ namespace TaskManager
             }
             return "Неизвестный";
         }
+
     }
 }
