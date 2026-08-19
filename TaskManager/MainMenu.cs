@@ -5,7 +5,7 @@ namespace TaskManager
     internal class MainMenu
     {
         private bool menuRunning = true;
-        private TaskService taskService = new TaskService();
+        private TaskService taskService = new TaskService(new JsonTaskRepository());
         
         public void Run()
         {
@@ -111,14 +111,14 @@ namespace TaskManager
                 {
                     status = "В процессе";
                 }
-                string hasDeadline = task.Deadline == null ? "Срок: не задан." : $"Срок: {task.Deadline:dd.MM.yyyy HH:mm}"; 
+                string deadlineText = task.Deadline == null ? "Срок: не задан." : $"Срок: {task.Deadline:dd.MM.yyyy HH:mm}"; 
 
                 Console.WriteLine($"Задача: {task.Title}");
                 Console.WriteLine($"Описание: {task.Description}");
                 Console.WriteLine($"Приоритет: {GetPriorityText(task.Priority)}");
                 Console.WriteLine($"Статус: {status}");
                 Console.WriteLine($"Создана: {task.CreatedAt:dd.MM.yyyy HH:mm}");
-                Console.WriteLine(hasDeadline);
+                Console.WriteLine(deadlineText);
                 Console.WriteLine("=======================");
                 Console.WriteLine();
             }
