@@ -404,14 +404,14 @@ namespace TaskManager
                 return time;
             }
             
-            bool isTime = TimeSpan.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan deadlineTime);
+            bool isTime = TimeSpan.TryParseExact(userTimeChoice, @"hh\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out TimeSpan deadlineTime);
             while (!isTime)
             {
                 Console.WriteLine("Неверный формат ввода времени.");
                 Console.WriteLine();
                 Console.Write("Введите время в формате часы:минуты: ");
                 userTimeChoice = Console.ReadLine();
-                isTime = TimeSpan.TryParseExact(userTimeChoice, "HH:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out deadlineTime);
+                isTime = TimeSpan.TryParseExact(userTimeChoice, @"hh\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None, out deadlineTime);
             }
             return deadlineTime;
         }

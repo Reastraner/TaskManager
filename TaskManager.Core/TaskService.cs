@@ -1,10 +1,10 @@
 ﻿namespace TaskManager
 {
-    internal class TaskService
+    public class TaskService
     {
         private readonly List<TaskItem> tasks = new List<TaskItem>();
         private int lastId;
-        private ITaskRepository repository;
+        private readonly ITaskRepository repository;
 
         public TaskService(ITaskRepository repository)
         {
@@ -137,7 +137,7 @@
 
         public bool TaskExists(int taskId)
         {
-            return FindTaskById != null;
+            return FindTaskById(taskId) != null;
         }
     }
 }

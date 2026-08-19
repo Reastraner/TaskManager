@@ -1,6 +1,6 @@
 ﻿namespace TaskManager
 {
-    internal enum TaskPriority
+    public enum TaskPriority
     {
         Low,
         Medium,

@@ -2,7 +2,7 @@
 
 namespace TaskManager
 {
-    internal class TaskItem
+    public class TaskItem
     {
         public string Title { get; private set; }
         public string Description { get; private set; }

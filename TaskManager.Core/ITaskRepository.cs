@@ -1,6 +1,6 @@
 ﻿namespace TaskManager
 {
-    internal interface ITaskRepository
+    public interface ITaskRepository
     {
         TaskData Load();
         void Save(TaskData data);
