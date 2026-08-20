@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="TaskManager.Console/TaskManager.Console.csproj" Id="8eb1623d-9769-4492-b029-ea6bc2c7fd4f" />
   <Project Path="TaskManager.Core/TaskManager.Core.csproj" Id="8af5698e-2f04-45e4-a503-080abc121b06" />
+  <Project Path="TaskManager.Desktop/TaskManager.Desktop.csproj" Id="ca22db83-caf2-4c0b-8a38-471e2b45a36b" />
 </Solution>
