@@ -18,13 +18,25 @@
             Grid.Row="0"
             Margin="10"
             FontSize="20"/>
-        
+
         <ListBox
             x:Name="TaskList"
             Grid.Row="1"
-            Margin="10"
-            DisplayMemberPath="Title"/>
-        
+            Margin="10">
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Title}"/>
+                        <TextBlock Text=" ["/>
+                        <TextBlock Text="{Binding Priority}"/>
+                        <TextBlock Text="]"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+        </ListBox>
+
         <Button 
             Content="Добавить задачу" 
             Grid.Row="2"
