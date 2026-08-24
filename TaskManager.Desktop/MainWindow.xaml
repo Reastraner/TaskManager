@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.Desktop"
+        xmlns:converters="clr-namespace:TaskManager.Desktop.Converters"
         mc:Ignorable="d"
         Title="My Task Manager" Height="450" Width="800">
+
+    <Window.Resources>
+        <converters:PriorityConverter x:Key="PriorityConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,25 +23,66 @@
             Grid.Row="0"
             Margin="10"
             FontSize="20"/>
-
-        <ListBox
-            x:Name="TaskList"
+        <TabControl
             Grid.Row="1"
             Margin="10">
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Title}"/>
-                        <TextBlock Text=" ["/>
-                        <TextBlock Text="{Binding Priority}"/>
-                        <TextBlock Text="]"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+            <TabItem Header="Все">
+                <ListBox
+                    x:Name="TaskList"
+    >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text=" ["/>
+                                <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"/>
+                                <TextBlock Text="]"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
 
-        </ListBox>
+                </ListBox>
+            </TabItem>
 
+            <TabItem Header="Активные">
+                <ListBox
+                    x:Name="ActiveTaskList">
+                    
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text=" ["/>
+                                <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"/>
+                                <TextBlock Text="]"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </TabItem>
+
+            <TabItem Header="Выполненные">
+                <ListBox
+                    x:Name="CompletedTaskList">
+                    
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Title}"/>
+                                <TextBlock Text=" ["/>
+                                <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityConverter}}"/>
+                                <TextBlock Text="]"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </TabItem>
+            
+        </TabControl>
+        
         <Button 
             Content="Добавить задачу" 
             Grid.Row="2"

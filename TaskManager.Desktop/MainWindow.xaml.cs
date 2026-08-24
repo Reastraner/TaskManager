@@ -25,6 +25,8 @@ namespace TaskManager.Desktop
             taskService.AddTask("Первая задача для WPF","Тестовая задача для WPF", TaskPriority.Medium, null);
 
             TaskList.ItemsSource = taskService.GetTasks();
+            ActiveTaskList.ItemsSource = taskService.GetTasks().Where(task => !task.IsCompleted);
+            CompletedTaskList.ItemsSource = taskService.GetTasks().Where(task => task.IsCompleted);
         }
     }
 }
