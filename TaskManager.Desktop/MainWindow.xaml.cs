@@ -20,10 +20,21 @@ namespace TaskManager.Desktop
         public MainWindow()
         {
             InitializeComponent();
-
             taskService = new TaskService(new MemoryTaskRepository());
-            taskService.AddTask("Первая задача для WPF","Тестовая задача для WPF", TaskPriority.Medium, null);
+            LoadTasks();
+        }
 
+        private void AddTaskButton_Click(Object sender, RoutedEventArgs e)
+        {
+            AddTaskWindow addTask = new AddTaskWindow(taskService);
+            addTask.Owner = this;
+            addTask.ShowDialog();
+
+            LoadTasks();
+        }
+
+        private void LoadTasks()
+        {
             TaskList.ItemsSource = taskService.GetTasks();
             ActiveTaskList.ItemsSource = taskService.GetTasks().Where(task => !task.IsCompleted);
             CompletedTaskList.ItemsSource = taskService.GetTasks().Where(task => task.IsCompleted);

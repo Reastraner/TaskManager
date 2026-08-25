@@ -88,6 +88,7 @@
             Grid.Row="2"
             Margin="10"
             Padding="15,5"
-            HorizontalAlignment="Right"/>
+            HorizontalAlignment="Right"
+            Click="AddTaskButton_Click"/>
     </Grid>
 </Window>
