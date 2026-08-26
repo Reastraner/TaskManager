@@ -90,5 +90,20 @@
             Padding="15,5"
             HorizontalAlignment="Right"
             Click="AddTaskButton_Click"/>
+
+        <Button
+            Content="Пометить выполненной"
+            Grid.Row="2"
+            Margin="10, 10, 150, 10"
+            Padding="15,5"
+            HorizontalAlignment="Right"
+            Click="CompleteTaskButton_Click"/>
+        <Button
+            Content="Удалить задачу"
+            Grid.Row="2"
+            Margin="10, 10, 320, 10"
+            Padding="15,5"
+            HorizontalAlignment="Right"
+            Click="DeleteTaskButton_Click"/>
     </Grid>
 </Window>

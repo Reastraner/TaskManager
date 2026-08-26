@@ -39,5 +39,39 @@ namespace TaskManager.Desktop
             ActiveTaskList.ItemsSource = taskService.GetTasks().Where(task => !task.IsCompleted);
             CompletedTaskList.ItemsSource = taskService.GetTasks().Where(task => task.IsCompleted);
         }
+        
+        private void CompleteTaskButton_Click(Object sender, RoutedEventArgs e)
+        {
+            TaskItem? selectedTask = ActiveTaskList.SelectedItem as TaskItem;
+
+            if (selectedTask == null)
+            {
+                MessageBox.Show("Выберите задачу из списка!");
+                return;
+            }
+
+            taskService.MarkAsCompleted(selectedTask.Id);
+            LoadTasks();
+        }
+
+        private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            TaskItem? selectedTask = ActiveTaskList.SelectedItem as TaskItem;
+
+            if (selectedTask == null)
+            {
+                MessageBox.Show("Выберите задачу из списка!");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show("Вы действительно хотите удалить задачу", "Подтверждение удаления", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                taskService.DeleteTask(selectedTask.Id);
+                LoadTasks();
+                return;
+            }
+        }
     }
 }
