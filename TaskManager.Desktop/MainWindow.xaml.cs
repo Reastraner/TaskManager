@@ -60,6 +60,11 @@ namespace TaskManager.Desktop
 
             if (selectedTask == null)
             {
+                selectedTask = CompletedTaskList.SelectedItem as TaskItem;
+            }
+
+            if (selectedTask == null)
+            {
                 MessageBox.Show("Выберите задачу из списка!");
                 return;
             }
@@ -73,5 +78,32 @@ namespace TaskManager.Desktop
                 return;
             }
         }
+
+        private void ActiveTaskList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+        }
+
+        private void CompletedTaskList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateButtons();
+        }
+
+        private void UpdateButtons()
+        {
+            CompleteTaskButton.Visibility = Visibility.Collapsed;
+            DeleteTaskButton.Visibility = Visibility.Collapsed;
+
+            if (ActiveTaskList.SelectedItem != null)
+            {
+                CompleteTaskButton.Visibility = Visibility.Visible;
+                DeleteTaskButton.Visibility = Visibility.Visible;
+            }
+
+            else if (CompletedTaskList.SelectedItem != null)
+            {
+                DeleteTaskButton.Visibility= Visibility.Visible;
+            }
+        } 
     }
 }
