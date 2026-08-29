@@ -79,6 +79,28 @@ namespace TaskManager.Desktop
             }
         }
 
+        private void EditTaskButton_Click(object obj, RoutedEventArgs e)
+        {
+            TaskItem? selectedTask = ActiveTaskList.SelectedItem as TaskItem;
+
+            if (selectedTask == null)
+            {
+                selectedTask = CompletedTaskList.SelectedItem as TaskItem;
+            }
+
+            if (selectedTask == null)
+            {
+                MessageBox.Show("Выберите задачу из списка!");
+                return;
+            }
+
+            EditTaskWindow editTask = new EditTaskWindow(selectedTask, taskService);
+            editTask.Owner = this;
+            editTask.ShowDialog();
+
+            LoadTasks();
+        }
+
         private void ActiveTaskList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateButtons();
@@ -93,16 +115,19 @@ namespace TaskManager.Desktop
         {
             CompleteTaskButton.Visibility = Visibility.Collapsed;
             DeleteTaskButton.Visibility = Visibility.Collapsed;
+            EditTaskButton.Visibility = Visibility.Collapsed;
 
             if (ActiveTaskList.SelectedItem != null)
             {
                 CompleteTaskButton.Visibility = Visibility.Visible;
                 DeleteTaskButton.Visibility = Visibility.Visible;
+                EditTaskButton.Visibility = Visibility.Visible;
             }
 
             else if (CompletedTaskList.SelectedItem != null)
             {
-                DeleteTaskButton.Visibility= Visibility.Visible;
+                DeleteTaskButton.Visibility = Visibility.Visible;
+                EditTaskButton.Visibility = Visibility.Visible;
             }
         } 
     }
