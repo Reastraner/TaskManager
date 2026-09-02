@@ -24,6 +24,16 @@ namespace TaskManager
             Id = id;
         }
 
+        public TaskItem(string title, string description, TaskPriority priority, DateTime? deadline, int id, DateTime createdAt)
+        {
+            Title = title;
+            Description = description;
+            Priority = priority;
+            Deadline = deadline;
+            Id = id;
+            CreatedAt = createdAt;
+        }
+
         public void UpdateTitle(string title)
         {
             Title = title;

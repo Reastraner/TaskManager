@@ -21,7 +21,22 @@ namespace TaskManager.Desktop
         {
             InitializeComponent();
             taskService = new TaskService(new MemoryTaskRepository());
-            LoadTasks();
+            PostgresTaskRepository repository = new PostgresTaskRepository();
+
+            TaskData data = repository.Load();
+
+            MessageBox.Show($"Задач загружено: {data.Tasks.Count}\nПоследний Id: {data.LastId}");
+
+            TaskItem task = data.Tasks[0];
+
+            MessageBox.Show(
+                $"{task.Id}\n" +
+                $"{task.Title}\n" +
+                $"{task.Description}\n" +
+                $"{task.Priority}\n" +
+                $"{task.Deadline}\n" +
+                $"{task.IsCompleted}\n" +
+                $"{task.CreatedAt}");
         }
 
         private void AddTaskButton_Click(Object sender, RoutedEventArgs e)
